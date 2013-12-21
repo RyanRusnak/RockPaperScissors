@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Rock Paper Scissors</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/overrides.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="title-area" class="row">
+        <div class="col-md-12"><h1>Welcome to Rock Paper Scissors!</h1></div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <img id="fist-one" src="http://openclipart.org/people/worker/mouse_pointer_fist.svg">
+          <select id="choice" class="form-control">
+              <option value="rock">Rock</option>
+              <option value="paper">Paper</option>
+              <option value="scissors">Scissors</option>
+          </select>
+        </div>
+        <div class="col-md-4"><button id="shoot" class="btn btn-primary btn-lg">SHOOT!</button></div>
+        <div class="col-md-4"><img id="fist-two" src="http://openclipart.org/people/worker/mouse_pointer_fist.svg"></div>
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+    function renderThrow(target, myThrow){
+      switch(myThrow){
+        case "rock":
+          target.attr('src', "http://openclipart.org/people/worker/mouse_pointer_fist.svg");
+          break;
+        case "paper":
+          target.attr('src', "http://openclipart.org/people/sarxos/sarxos_Paper_Sheets.svg");
+          break;
+        case "scissors":
+          target.attr('src', "http://openclipart.org/people/pitr/pitr_scissors_half-open_icon.svg");
+          break;
+        default:
+          console.log("None of the above!");
+        }
+    }
+
+    function renderResult(r){
+      $( "#title-area" ).html('<h1>'+r+'</h1>');
+      $( "#title-area" ).addClass('alert');
+      $( "#title-area" ).removeClass('alert-success').removeClass('alert-danger').removeClass('alert-info');
+      if (r == 'User wins'){
+        $( "#title-area" ).addClass('alert-success');
+      }else if (r == 'User loses'){
+        $( "#title-area" ).addClass('alert-danger');
+      }else{
+        $( "#title-area" ).addClass('alert-info');
+      }
+    }
+
+      $("#shoot").click(function(){
+        $.post( "/throws.json",{'throw' : $("#choice").val()}, function( data ) {
+          renderResult(data.game_result)
+          renderThrow($("#fist-two"),data.comp_throw );
+          $("#shoot").text('Play Again');
+        }); 
+      });
+
+      $("#choice").change(function(event) {
+        renderThrow($('#fist-one'), $(this).val());
+      });
+      
+    </script>
+  </body>
+</html>
